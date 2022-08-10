@@ -1,6 +1,9 @@
-import hangman
 import random
+
+import hangman
+
 random.seed(10)
+
 
 def test_get_random_word_min_length_6():
     my_dict = "/tmp/my_dict.txt"
@@ -10,6 +13,7 @@ def test_get_random_word_min_length_6():
     word = hangman.get_random_word(my_dict)
     assert word == "ambulances"
 
+
 def test_get_random_word_no_non_alphanum():
     my_dict = "/tmp/my_dict.txt"
     with open(my_dict, "w") as f:
@@ -17,14 +21,6 @@ def test_get_random_word_no_non_alphanum():
             f.write(i+"\n")
     word = hangman.get_random_word(my_dict)
     assert word == "elephants"
-
-def test_get_random_word_no_proper_noun():
-    my_dict = "/tmp/my_dict.txt"
-    with open(my_dict, "w") as f:
-        for i in ['house', "Navas", "Mercury"]:
-            f.write(i+"\n")
-    word = hangman.get_random_word(my_dict)
-    assert word == "house"
 
 
 def test_get_random_word():
@@ -38,53 +34,66 @@ def test_get_random_word():
         words.add(word)
     assert words == {"hospitalized", 'ambulances'}
 
+
 def test_mask_word_no_guesses():
     for i in ["monkey", "space", "elephant", "water"]:
-        assert hangman.mask_word(i, []) == len(i)* "-"
+        assert hangman.mask_word(i, []) == len(i) * "-"
+
+
 def test_mask_word_invalid_guesses():
     for i in ["monkey", "space", "elephant", "water"]:
         assert hangman.mask_word(i, ["z", "q"]) == len(i) * "-"
+
+
 def test_mask_word_single_guesses():
-    assert hangman.mask_word('elephant', ['l',]) == '-l------'
-    assert hangman.mask_word('monkey', ['o',]) == '-o----'
+    assert hangman.mask_word('elephant', ['l', ]) == '-l------'
+    assert hangman.mask_word('monkey', ['o', ]) == '-o----'
+
 
 def test_mask_word_multiple_guesses():
-    assert hangman.mask_word('elephant', ['e', 'l',]) == 'ele-----'
-   
-def test_get_status():
-    secret_word = "police"
-    guessed_letters = ["o", "j"]
-    turns_left = 5
-    assert hangman.get_status(secret_word, guessed_letters, turns_left) == f"""{hangman.mask_word(secret_word, guessed_letters)}
-    Guessed Letters: {" ".join(guessed_letters)}
-    Turns Left: {turns_left}"""
+    assert hangman.mask_word('elephant', ['e', 'l', ]) == 'ele-----'
+
+
 def test_process_turn_already_guessed():
     current_guess = "v"
     secret_word = "laptop"
     guessed_letters = ["v", "p"]
     turns_left = 5
-    assert hangman.process_turn(secret_word, current_guess, guessed_letters, turns_left ) == (turns_left, hangman.ALREADY_GUESSED)
+    assert hangman.process_turn(secret_word, current_guess, guessed_letters, turns_left) == (
+        turns_left, hangman.ALREADY_GUESSED)
+
+
 def test_process_turn_bad_guess():
     current_guess = "v"
     secret = 'police'
     guessed_letters = ["o", "j"]
     turns_left = 5
-    assert hangman.process_turn(secret, current_guess, guessed_letters, turns_left) == (turns_left -1, hangman.CONTINUE)
+    assert hangman.process_turn(secret, current_guess, guessed_letters, turns_left) == (
+        turns_left - 1, hangman.CONTINUE)
+
+
 def test_process_turn_good_guess():
     current_guess = "l"
     secret_word = "police"
     guessed_letters = ["p", "h", "i"]
     turns_left = 5
-    assert hangman.process_turn(secret_word, current_guess, guessed_letters, turns_left) == (turns_left, hangman.CONTINUE)
+    assert hangman.process_turn(secret_word, current_guess, guessed_letters, turns_left) == (
+        turns_left, hangman.CONTINUE)
+
+
 def test_process_turn_win():
     current_guess = "o"
     secret_word = "doctor"
     guessed_letters = ["g", "d", "c", "t", "i", "r"]
     turns_left = 5
-    assert hangman.process_turn(secret_word, current_guess, guessed_letters, turns_left) == (turns_left, hangman.WON)
+    assert hangman.process_turn(
+        secret_word, current_guess, guessed_letters, turns_left) == (turns_left, hangman.WON)
+
+
 def test_process_turn_lost():
     current_guess = "u"
     secret_word = "apple"
     guessed_letters = ["a", "g", "s", "l", "w", "m", "q"]
     turns_left = 1
-    assert hangman.process_turn(secret_word, current_guess, guessed_letters, turns_left) == (turns_left, hangman.LOST)
+    assert hangman.process_turn(
+        secret_word, current_guess, guessed_letters, turns_left) == (turns_left, hangman.LOST)
